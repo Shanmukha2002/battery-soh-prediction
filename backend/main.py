@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 from state import soh_model, rul_model
-from utils import create_soh_sequence, create_rul_sequence
+from utils import create_soh_sequence
 
 app = FastAPI()
 
@@ -29,25 +29,38 @@ def predict(data: InputData):
     try:
         sequence = np.array(data.sequence)
 
-        # Validate input
+        # Validate: must have exactly 10 timesteps
         if sequence.shape[0] != 10:
-            return {"error": "Input must have 10 timesteps"}
+            return {"error": "Input must have exactly 10 rows"}
+
+        # Validate: must have exactly 7 features per row
+        if sequence.shape[1] != 7:
+            return {"error": f"Each row must have 7 values (ambient_temp, voltage, current, temperature, load_current, load_voltage, time). Got {sequence.shape[1]}"}
 
         # SOH prediction
         soh_input = create_soh_sequence(sequence)
-        soh_pred = soh_model.predict(soh_input)[0][0]
+        soh_pred = float(soh_model.predict(soh_input, verbose=0)[0][0])
 
-        # 🔴 TEMP FIX FOR RUL (DEMO ONLY)
-        try:
-            # Simple consistent RUL (derived from SOH)
-            rul_pred = 1 - float(soh_pred)
-        except:
-            # fallback if model shape mismatch
-            rul_pred = float(100 * (1 - soh_pred))  # simple approximation
+        # Clamp SOH between 0 and 1
+        soh_pred = max(0.0, min(1.0, soh_pred))
+
+        # RUL estimation using SOH
+        # Battery end-of-life is at SOH = 0.70 (70% threshold)
+        # RUL = how much life remains from current SOH down to 0.70
+        # Normalized between 0 (end of life) and 1 (brand new)
+        SOH_NEW = 1.0     # brand new battery
+        SOH_EOL = 0.70    # end of life threshold
+
+        if soh_pred <= SOH_EOL:
+            rul_pred = 0.0   # battery is at or past end of life
+        else:
+            rul_pred = (soh_pred - SOH_EOL) / (SOH_NEW - SOH_EOL)
+
+        rul_pred = max(0.0, min(1.0, rul_pred))
 
         return {
-            "SOH": float(soh_pred),
-            "RUL": float(rul_pred)
+            "SOH": round(soh_pred, 4),
+            "RUL": round(rul_pred, 4)
         }
 
     except Exception as e:
