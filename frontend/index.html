@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Battery Health Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🔋 Battery Health Dashboard</h1>
+    <p class="subtitle">SOH & RUL Prediction with Visualization</p>
+
+    <div class="grid">
+
+        <!-- INPUT -->
+        <div class="card input-card">
+            <h3>📥 Input Data</h3>
+            <textarea id="inputData"></textarea>
+            <button onclick="predict()">🚀 Predict</button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="card result-card">
+            <h3>📊 Results</h3>
+            <div class="result-box">
+                <p>SOH</p>
+                <h2 id="soh">--</h2>
+            </div>
+            <div class="result-box">
+                <p>RUL</p>
+                <h2 id="rul">--</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GRAPH -->
+    <div class="card graph-card">
+        <h3>📈 SOH Trend</h3>
+        <canvas id="chart"></canvas>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

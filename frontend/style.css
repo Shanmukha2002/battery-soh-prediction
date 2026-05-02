@@ -1,0 +1,81 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI';
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #94a3b8;
+    margin-bottom: 20px;
+}
+
+/* GRID LAYOUT */
+.grid {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    flex: 1;
+}
+
+/* INPUT */
+textarea {
+    width: 100%;
+    height: 250px;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    background: #22c55e;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* RESULTS */
+.result-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.result-box {
+    background: #0f172a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    text-align: center;
+}
+
+.result-box h2 {
+    color: #22c55e;
+}
+
+/* GRAPH */
+.graph-card {
+    height: 350px;
+}
